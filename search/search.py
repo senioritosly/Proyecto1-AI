@@ -11,6 +11,7 @@
 # Student side autograding was added by Brad Miller, Nick Hay, and
 # Pieter Abbeel (pabbeel@cs.berkeley.edu).
 
+import util
 
 """
 In search.py, you will implement generic search algorithms which are called by
@@ -87,6 +88,30 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
+
+    #Estado inicial
+    nodoInicial = problem.getStartState()
+    if problem.isGoalState(nodoInicial):
+        return []
+
+    #Se inicializa una cola para almacenar los nodos a explorar
+    cola = util.Queue()
+    nodosVisitados = []
+
+    cola.push((nodoInicial, []))
+
+    while not cola.isEmpty():
+        nodoActual, acciones = cola.pop()
+        if nodoActual not in nodosVisitados:
+            nodosVisitados.append(nodoActual)
+
+            if problem.isGoalState(nodoActual):
+                return acciones
+
+            for proximoNodo, accion, cost in problem.getSuccessors(nodoActual):
+                nuevaAccion = acciones + [accion]
+                cola.push((proximoNodo, nuevaAccion))
+
     util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
