@@ -383,14 +383,12 @@ def cornersHeuristic(state, problem):
 
     "*** YOUR CODE HERE ***"
 
-    # Encuentra qué esquinas quedan para llegar a GoalState.
     esquinaVisitada = state[1]
     esquinaFaltanteDeVisitar = []
     for corner in corners:
         if corner not in esquinaVisitada:
             esquinaFaltanteDeVisitar.append(corner)
-    # Si bien no todos los rincones son visitados, se encuentra a través de manhattanDistance
-    # la ruta más eficiente para cada esquina
+
     costoTotalHeuristica = 0
     cordinar = state[0]
     curPoint = cordinar
@@ -499,7 +497,6 @@ def foodHeuristic(state, problem):
     #print "STATE", str(state)
     "*** YOUR CODE HERE ***"
     heuristicaMaxima = 0
-    # Calcula la heurística máxima utilizando la heurística de distancia de laberinto.
     for i in foodGrid.asList():  
         heuristica = mazeDistance(position, i, problem.startingGameState)
         if heuristicaMaxima < heuristica:
