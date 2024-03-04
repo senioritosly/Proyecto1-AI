@@ -322,7 +322,8 @@ class CornersProblem(search.SearchProblem):
             state, 'action' is the action required to get there, and 'stepCost'
             is the incremental cost of expanding to that successor
         """
-        
+        #por si se quiere ver el estado
+        #print "STATE" , str(state) 
         x, y = state[0]
         visitedCorners = state[1]
         successors = []
@@ -339,15 +340,15 @@ class CornersProblem(search.SearchProblem):
             nextx, nexty = int(x + dx), int(y + dy)
             hitsWall = self.walls[nextx][nexty]
             if not hitsWall:
-                nextNode = (nextx, nexty)
-                nextVisitedCorners = list(visitedCorners)
-                if nextNode in self.corners:
-                    if nextNode not in nextVisitedCorners:
-                        nextVisitedCorners.append(nextNode)
-                nextState = ((nextNode, nextVisitedCorners), action, 1)
-                successors.append(nextState)
+                sucesorDeLaEsquinaVisitada = list(visitedCorners)
+                next_node = (nextx, nexty)
+                if next_node in self.corners:
+                    if next_node not in sucesorDeLaEsquinaVisitada:
+                        sucesorDeLaEsquinaVisitada.append(next_node)
+                sucesor = ((next_node, sucesorDeLaEsquinaVisitada), action, 1)
+                successors.append(sucesor)
 
-        self._expanded += 1 # DO NOT CHANGE
+        self._expanded += 1  # DO NOT CHANGE
         return successors
 
     def getCostOfActions(self, actions):
@@ -381,7 +382,25 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
-    return 0 # Default to trivial solution
+
+    # Encuentra qué esquinas quedan para llegar a GoalState.
+    esquinaVisitada = state[1]
+    esquinaFaltanteDeVisitar = []
+    for corner in corners:
+        if corner not in esquinaVisitada:
+            esquinaFaltanteDeVisitar.append(corner)
+    # Si bien no todos los rincones son visitados, se encuentra a través de manhattanDistance
+    # la ruta más eficiente para cada esquina
+    costoTotalHeuristica = 0
+    cordinar = state[0]
+    curPoint = cordinar
+    while esquinaFaltanteDeVisitar:
+        costoHeuristica, corner = \
+            min([(util.manhattanDistance(curPoint, corner), corner) for corner in esquinaFaltanteDeVisitar])
+        esquinaFaltanteDeVisitar.remove(corner)
+        curPoint = corner
+        costoTotalHeuristica += costoHeuristica
+    return costoTotalHeuristica
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
@@ -398,6 +417,7 @@ class FoodSearchProblem:
       pacmanPosition: a tuple (x,y) of integers specifying Pacman's position
       foodGrid:       a Grid (see game.py) of either True or False, specifying remaining food
     """
+    example = True
     def __init__(self, startingGameState):
         self.start = (startingGameState.getPacmanPosition(), startingGameState.getFood())
         self.walls = startingGameState.getWalls()
@@ -473,9 +493,19 @@ def foodHeuristic(state, problem):
     Subsequent calls to this heuristic can access
     problem.heuristicInfo['wallCount']
     """
+
     position, foodGrid = state
+    #por si se quiere ver el estado
+    #print "STATE", str(state)
     "*** YOUR CODE HERE ***"
-    return 0
+    heuristicaMaxima = 0
+    # Calcula la heurística máxima utilizando la heurística de distancia de laberinto.
+    for i in foodGrid.asList():  
+        heuristica = mazeDistance(position, i, problem.startingGameState)
+        if heuristicaMaxima < heuristica:
+            heuristicaMaxima = heuristica
+
+    return heuristicaMaxima
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
