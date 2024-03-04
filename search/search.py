@@ -95,7 +95,7 @@ def depthFirstSearch(problem):
         return []
 
     #Se inicializa una cola para almacenar los nodos a explorar
-    cola = util.Queue()
+    cola = util.Stack()
     nodosVisitados = []
 
     cola.push((nodoInicial, []))
@@ -117,6 +117,8 @@ def depthFirstSearch(problem):
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
+
+    
     util.raiseNotDefined()
 
 def uniformCostSearch(problem):
